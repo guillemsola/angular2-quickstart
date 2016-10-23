@@ -1,0 +1,9 @@
+<div *ngIf="release">
+<h2>{{release.description}} details!</h2>
+<div><label>id: </label>{{release.id}}</div>
+<div>
+    <label>description: </label>
+    <input [(ngModel)]="release.description" placeholder="description"/>
+</div>
+<button (click)="goBack()">Back</button>
+</div>

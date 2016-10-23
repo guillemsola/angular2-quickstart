@@ -1,21 +1,37 @@
-import { Component, Input } from '@angular/core';
+// Keep the Input import for now, we'll remove it later:
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Params }   from '@angular/router';
+import { Location }                 from '@angular/common';
 
+import { ReleaseService } from './release.service';
 import { Release } from './release';
 
 @Component({
+  moduleId: module.id,
   selector: 'release-detail',
-  template: `
-  <div *ngIf="release">
-    <h2>{{release.description}} details!</h2>
-    <div><label>id: </label>{{release.id}}</div>
-    <div>
-      <label>description: </label>
-      <input [(ngModel)]="release.description" placeholder="description"/>
-    </div>
-  </div>
-  `  
+  templateUrl: 'release-detail.component.html',
 })
-export class ReleaseDetailComponent {
+
+export class ReleaseDetailComponent implements OnInit {
     @Input()
     release: Release;
+
+    constructor(
+      private releaseService: ReleaseService,
+      private route: ActivatedRoute,
+      private location: Location
+    ) {}
+
+    ngOnInit(): void {
+      this.route.params.forEach((params: Params) => {
+        let id = +params['id'];
+        this.releaseService.getRelease(id)
+          .then(release => this.release = release);
+      });
+    }
+
+    goBack(): void {
+      this.location.back();
+    }
+
 }

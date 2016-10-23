@@ -1,0 +1,14 @@
+<h2>Releases List</h2>
+<ul class="releases">
+  <li *ngFor="let release of releases" 
+    [class.selected]="Release === selectedRelease"
+    (click)="onSelect(release)">
+    <span class="release">{{release.id}}</span> {{release.description}}
+  </li>
+</ul>
+<div *ngIf="selectedRelease">
+  <h2>
+      {{selectedRelease.release | uppercase}} is my selection
+  </h2>
+  <button (click)="gotoDetail()">View Details</button>
+</div>
