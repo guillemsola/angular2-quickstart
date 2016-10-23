@@ -1,22 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-export class Release {
-  id: number;
-  description: string;
-}
-
-const RELEASES: Release[] = [
-  { id: 11, description: 'SPN-1.2' },
-  { id: 12, description: 'DXC-2.3' },
-  { id: 13, description: 'SPN-1.3' },
-  { id: 14, description: 'BO-5.4' },
-  { id: 15, description: 'DXC-2.3' },
-  { id: 16, description: 'SPM-1.3.1' },
-  { id: 17, description: 'BPN-4.5' },
-  { id: 18, description: 'PL-7.1' },
-  { id: 19, description: 'PL-7.1.1' },
-  { id: 20, description: 'DXC-3.0' }
-];
+import { Release } from './release';
+import { ReleaseService } from './release.service';
 
 @Component({
   selector: 'my-app',
@@ -28,22 +13,9 @@ const RELEASES: Release[] = [
       [class.selected]="Release === selectedRelease"
       (click)="onSelect(release)">
       <span class="release">{{release.id}}</span> {{release.description}}
-      <!--<div><label>id: </label>{{release.id}}</div>
-      <div>
-        <label>description: </label>
-        <input [(ngModel)]="release.description" placeholder="description">
-      </div>-->
-   </li>
-</ul>
-   <div *ngIf="selectedRelease">
-    <h2>{{selectedRelease.description}} details!</h2>
-    <div><label>id: </label>{{selectedRelease.id}}</div>
-    <div>
-      <label>description: </label>
-      <input [(ngModel)]="selectedRelease.description" placeholder="description"/>
-    </div>
-  </div>
-
+    </li>
+  </ul>
+  <release-detail [release]="selectedRelease"></release-detail>
   `,
   styles: [`
   .selected {
@@ -93,14 +65,24 @@ const RELEASES: Release[] = [
     margin-right: .8em;
     border-radius: 4px 0 0 4px;
   }
-`]
-
+  `],
+  providers: [ReleaseService]
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Release Manager Editor';
-  releases = RELEASES;
+  releases: Release[];
   selectedRelease: Release;
+
+  constructor(private releaseService: ReleaseService) { }
+
+  getReleases(): void {
+    this.releaseService.getReleases().then(releases => this.releases = releases)
+  }
+
+  ngOnInit(): void {
+    this.getReleases();
+  }
 
   onSelect(release: Release): void {
     this.selectedRelease = release;
